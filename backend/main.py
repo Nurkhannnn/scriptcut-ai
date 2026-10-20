@@ -1,37 +1,54 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException
 from pydantic import BaseModel
-from typing import List
+from sqlalchemy.orm import Session
+from backend.database import SessionLocal, init_db, ProjectDB
 
 app = FastAPI(title="ScriptCut AI API")
 
-class CutRange(BaseModel):
-    start_time: float
-    end_time: float
+# Инициализация базы данных при старте
+@app.on_event("startup")
+def startup_event():
+    init_db()
+    # Сидим базовые данные, если пусто
+    db = SessionLocal()
+    if not db.query(ProjectDB).filter(ProjectDB.id == "proj-1").first():
+        sample = ProjectDB(
+            id="proj-1",
+            title="Sample Podcast Episode",
+            transcript="Hello and welcome to our podcast. Today we talk about AI video editing."
+        )
+        db.add(sample)
+        db.commit()
+    db.close()
 
-class Project(BaseModel):
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+class ProjectResponse(BaseModel):
     id: str
     title: str
     transcript: str
-    cuts: List[CutRange] = []
 
-# In-memory store for initial iteration
-projects_db = {
-    "proj-1": Project(
-        id="proj-1",
-        title="Sample Podcast Episode",
-        transcript="Hello and welcome to our podcast. [CUT THIS PART] Today we talk about AI video editing.",
-        cuts=[CutRange(start_time=12.5, end_time=18.0)]
-    )
-}
+    class Config:
+        orm_mode = True
 
 @app.get("/")
 def read_root():
     return {"status": "ok", "app": "ScriptCut AI"}
 
-@app.get("/api/projects")
-def list_projects():
-    return list(projects_db.values())
+@app.get("/api/projects", response_model=list[ProjectResponse])
+def list_projects(db: Session = Depends(get_db)):
+    return db.query(ProjectDB).all()
 
-@app.get("/api/projects/{project_id}")
+@app.get("/api/projects/{project_id}", response_model=ProjectResponse)
+def get_project(project_id: str, db: Session = Depends(get_db)):
+    project = db.query(ProjectDB).filter(ProjectDB.id == project_id).first()
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return project
 def get_project(project_id: str):
     return projects_db.get(project_id, {"error": "Project not found"})
