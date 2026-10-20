@@ -1,0 +1,29 @@
+openapi: 3.0.3
+info:
+  title: ScriptCut AI API
+  version: 1.0.0
+  description: API for transcript-based video editing.
+paths:
+  /api/projects:
+    get:
+      summary: List all projects
+      responses:
+        '200':
+          description: List of projects
+    post:
+      summary: Create new video project
+      responses:
+        '201':
+          description: Project created
+  /api/projects/{project_id}:
+    get:
+      summary: Get project details
+      responses:
+        '200':
+          description: Project details with transcript
+  /api/projects/{project_id}/cuts:
+    post:
+      summary: Update cut ranges based on edited transcript
+      responses:
+        '200':
+          description: Video timeline updated
