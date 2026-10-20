@@ -1,0 +1,9 @@
+/AGENTS.md
+/_docs/plan.md
+/_docs/process.md
+/_docs/tasks.md
+/_docs/task-template.md
+/_docs/team/pm.md
+/_docs/team/software-engineer.md
+/_docs/team/qa-engineer.md
+/chat-brainstorm.md
