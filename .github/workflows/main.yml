@@ -53,7 +53,7 @@ jobs:
           --health-interval 5s --health-timeout 5s --health-retries 10
     env:
       DATABASE_URL: postgresql+psycopg2://scriptcut:scriptcut@localhost:5432/scriptcut
-      MEDIA_DIR: ${{ runner.temp }}/media
+      MEDIA_DIR: /tmp/media
       TRANSCRIBE_PROVIDER: stub
     steps:
       - uses: actions/checkout@v4
