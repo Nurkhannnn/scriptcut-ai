@@ -1,0 +1,42 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-scriptcut}
+      POSTGRES_USER: ${POSTGRES_USER:-scriptcut}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-scriptcut}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  app:
+    build: .
+    image: ${APP_IMAGE:-scriptcut-ai:local}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:-scriptcut}:${POSTGRES_PASSWORD:-scriptcut}@db:5432/${POSTGRES_DB:-scriptcut}
+      TRANSCRIBE_PROVIDER: ${TRANSCRIBE_PROVIDER:-stub}
+      MAX_UPLOAD_MB: ${MAX_UPLOAD_MB:-500}
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    volumes:
+      - media:/data/media
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+volumes:
+  pgdata:
+  media:
