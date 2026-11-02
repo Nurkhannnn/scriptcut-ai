@@ -1,0 +1,18 @@
+body { font-family: system-ui, sans-serif; margin: 0; color: #1a1a1a; background: #f6f7f9; }
+.top { background: #111; padding: 12px 24px; }
+.top a { color: #fff; text-decoration: none; font-weight: 600; }
+main { max-width: 900px; margin: 24px auto; padding: 0 16px; }
+button { padding: 6px 12px; cursor: pointer; }
+button:disabled { opacity: .5; cursor: not-allowed; }
+.card { background: #fff; padding: 16px; margin: 16px 0; border-radius: 8px; display: grid; gap: 12px; }
+.error { color: #b00020; }
+.list { padding-left: 20px; }
+video { width: 100%; max-height: 420px; background: #000; }
+.timeline { display: flex; gap: 2px; height: 24px; margin: 12px 0; }
+.tl { background: #3b82f6; cursor: pointer; border-radius: 2px; }
+.tl.deleted { background: #d1d5db; }
+.toolbar { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
+.segments { list-style: none; padding: 0; display: grid; gap: 8px; }
+.segments li { display: grid; grid-template-columns: 48px 1fr auto auto; gap: 8px; align-items: center; background: #fff; padding: 8px; border-radius: 6px; }
+.segments li[data-deleted="true"] { opacity: .5; text-decoration: line-through; }
+textarea { width: 100%; resize: vertical; }

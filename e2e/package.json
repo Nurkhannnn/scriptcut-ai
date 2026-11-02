@@ -1,0 +1,16 @@
+{
+  "name": "scriptcut-e2e",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:project": "playwright test tests/01-project-creation.spec.ts",
+    "test:sync": "playwright test tests/02-text-editing-sync.spec.ts",
+    "test:cut": "playwright test tests/03-video-cut.spec.ts",
+    "test:export": "playwright test tests/04-export.spec.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "@types/node": "^20.17.0",
+    "typescript": "^5.7.0"
+  }
+}
